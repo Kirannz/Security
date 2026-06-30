@@ -1,0 +1,390 @@
+Below is **Experiment 3** in exactly the same simplified, step-by-step style as your first experiment.
+
+---
+
+# Experiment 3 — CI/CD Pipeline Java Maven Project with Kubernetes
+
+## 1. Create Project Folder
+
+```bash
+mkdir java-kubernetes-app
+cd java-kubernetes-app
+```
+
+---
+
+## 2. Create Maven Folder Structure
+
+```bash
+mkdir -p src/main/java/com/example
+```
+
+Project structure:
+
+```text
+java-kubernetes-app
+│── pom.xml
+│── Dockerfile
+│── Jenkinsfile
+│── deployment.yaml
+│── service.yaml
+└── src
+    └── main
+        └── java
+            └── com
+                └── example
+                    └── App.java
+```
+
+---
+
+## 3. Create Java File
+
+```bash
+nano src/main/java/com/example/App.java
+```
+
+Paste:
+
+```java
+package com.example;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Application Deployed Successfully on Kubernetes");
+    }
+}
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+## 4. Create pom.xml
+
+```bash
+nano pom.xml
+```
+
+Paste:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>java-kubernetes-app</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+</project>
+```
+
+---
+
+## 5. Build Maven Project
+
+```bash
+mvn clean package
+```
+
+This creates:
+
+```text
+target/java-kubernetes-app-1.0.jar
+```
+
+---
+
+## 6. Run Java Program
+
+```bash
+java -cp target/java-kubernetes-app-1.0.jar com.example.App
+```
+
+Output:
+
+```text
+Application Deployed Successfully on Kubernetes
+```
+
+---
+
+## 7. Create Dockerfile
+
+```bash
+nano Dockerfile
+```
+
+Paste:
+
+```dockerfile
+FROM eclipse-temurin:17-jdk
+
+WORKDIR /app
+
+COPY target/java-kubernetes-app-1.0.jar app.jar
+
+CMD ["java","-cp","app.jar","com.example.App"]
+```
+
+---
+
+## 8. Build Docker Image
+
+```bash
+docker build -t yourdockerhubusername/java-kubernetes-app:v1 .
+```
+
+---
+
+## 9. Login to Docker Hub
+
+```bash
+docker login
+```
+
+Enter your Docker Hub username and password.
+
+---
+
+## 10. Push Docker Image
+
+```bash
+docker push yourdockerhubusername/java-kubernetes-app:v1
+```
+
+---
+
+## 11. Initialize Git
+
+```bash
+git init
+git add .
+git commit -m "Java Kubernetes Project"
+```
+
+---
+
+## 12. Push to GitHub
+
+Create an empty GitHub repository.
+
+Then execute:
+
+```bash
+git branch -M main
+git remote add origin YOUR_GITHUB_REPOSITORY_URL
+git push -u origin main
+```
+
+---
+
+## 13. Start Kubernetes Cluster
+
+If using Minikube:
+
+```bash
+minikube start
+```
+
+Verify:
+
+```bash
+kubectl get nodes
+```
+
+---
+
+## 14. Create Kubernetes Deployment File
+
+```bash
+nano deployment.yaml
+```
+
+Paste:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-app
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: java-app
+
+  template:
+    metadata:
+      labels:
+        app: java-app
+
+    spec:
+      containers:
+      - name: java-app
+        image: yourdockerhubusername/java-kubernetes-app:v1
+```
+
+---
+
+## 15. Create Kubernetes Service File
+
+```bash
+nano service.yaml
+```
+
+Paste:
+
+```yaml
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: java-service
+
+spec:
+  selector:
+    app: java-app
+
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+  type: NodePort
+```
+
+---
+
+## 16. Deploy Application to Kubernetes
+
+```bash
+kubectl apply -f deployment.yaml
+```
+
+---
+
+## 17. Create Kubernetes Service
+
+```bash
+kubectl apply -f service.yaml
+```
+
+---
+
+## 18. Verify Deployment
+
+```bash
+kubectl get all
+```
+
+---
+
+## 19. Access Application
+
+```bash
+minikube service java-service --url
+```
+
+---
+
+## 20. Create Jenkinsfile
+
+```bash
+nano Jenkinsfile
+```
+
+Paste:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Build Maven') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t yourdockerhubusername/java-kubernetes-app:v1 .'
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                sh 'docker push yourdockerhubusername/java-kubernetes-app:v1'
+            }
+        }
+
+        stage('Deploy Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+            }
+        }
+
+    }
+}
+```
+
+---
+
+## 21. Push Jenkinsfile to GitHub
+
+```bash
+git add .
+git commit -m "Added Jenkins Pipeline"
+git push
+```
+
+---
+
+## 22. Jenkins Execution Steps
+
+1. Open Jenkins.
+2. Click **New Item**.
+3. Enter name: `java-kubernetes-pipeline`
+4. Select **Pipeline**.
+5. Click **OK**.
+6. Go to **Pipeline** section.
+7. Select **Pipeline script from SCM**.
+8. SCM: **Git**
+9. Paste your GitHub repository URL.
+10. Branch: `main`
+11. Script Path: `Jenkinsfile`
+12. Click **Save**.
+13. Click **Build Now**.
+
+---
+
+## Final Output
+
+```text
+Maven Build Successful
+
+Docker Image Built Successfully
+
+Docker Image Pushed to Docker Hub
+
+Kubernetes Deployment Created
+
+Application Running Successfully on Kubernetes
+```
+
+This follows the same simplified descriptive format as your first experiment, making it easy to write in a lab record or execute step by step.
+
