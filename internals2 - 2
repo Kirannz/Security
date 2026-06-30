@@ -1,0 +1,142 @@
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+
+
+
+
+package com.example.demo;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+
+    @GetMapping("/")
+    public String home() {
+        return "Spring Boot Application";
+    }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello Java Backend";
+    }
+}
+
+
+
+mvn clean package
+ nano Dockerfile
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+COPY target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","app.jar"]
+
+
+
+docker tag demo:v1 vijay14082003/demo:v1
+mca@administrator:~/Downloads/demo$ docker push vijay14082003/demo:v1
+docker tag demo:v1 vijay14082003/demo:v1
+mca@administrator:~/Downloads/demo$ docker push vijay14082003/demo:v1
+
+
+
+If your Docker image is already pushed to Docker Hub, deploy it to Kubernetes with these commands:
+
+### 1. Start Minikube
+
+```bash
+minikube start
+```
+
+### 2. Check cluster
+
+```bash
+kubectl get nodes
+```
+
+### 3. Create deployment
+
+```bash
+kubectl create deployment demo --image=vijay14082003/demo:v1
+```
+
+### 4. Check deployment
+
+```bash
+kubectl get deployments
+```
+
+### 5. Check pods
+
+```bash
+kubectl get pods
+```
+
+### 6. Expose deployment
+
+```bash
+kubectl expose deployment demo --type=NodePort --port=8080 --target-port=8080
+```
+
+### 7. Check services
+
+```bash
+kubectl get services
+```
+
+### 8. Get application URL
+
+```bash
+minikube service demo --url
+```
+
+### 9. Check all resources
+
+```bash
+kubectl get all
+```
+
+### 10. View logs
+
+```bash
+kubectl logs <pod-name>
+```
+
+### 11. Describe pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+### If deployment already exists
+
+Instead of creating it again, update the image:
+
+```bash
+kubectl set image deployment/demo demo=vijay14082003/demo:v1
+```
+
+or delete and recreate:
+
+```bash
+kubectl delete deployment demo
+kubectl create deployment demo --image=vijay14082003/demo:v1
+```
+
+If your `docker push` is still failing, deployment from Docker Hub will also fail. Fix the Docker Hub push first, then use the commands above.
