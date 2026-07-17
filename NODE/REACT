@@ -1,0 +1,644 @@
+Great! We'll continue with the **React Application** in the **same detailed format** as your Java Maven experiment.
+
+> **Note:** This answer is long, so I'll provide **React** now. Then we'll do **Node.js**, **Standalone Python**, and **Standalone Java** one by one in the same format.
+
+---
+
+# Experiment 2
+
+## Aim
+
+Design and implement a CI/CD pipeline for a React application. Use Git/GitHub for version control, Jenkins for pipeline execution, Docker for containerization, and deploy the application on Docker Swarm.
+
+---
+
+## Architecture
+
+```text
+Developer
+    │
+    ▼
+GitHub
+    │
+    ▼
+Jenkins
+    │
+    ▼
+npm Install
+    │
+    ▼
+React Build
+    │
+    ▼
+Docker Build
+    │
+    ▼
+Docker Swarm
+    │
+    ▼
+Running Service
+```
+
+---
+
+## Steps
+
+### 1. Create React Project
+
+```bash
+npx create-react-app react-cicd-app
+cd react-cicd-app
+```
+
+---
+
+### 2. Project Structure
+
+```text
+react-cicd-app
+│── public
+│── src
+│    └── App.js
+│── package.json
+│── Dockerfile
+│── Jenkinsfile
+```
+
+---
+
+### 3. Modify App.js
+
+```bash
+nano src/App.js
+```
+
+Paste:
+
+```javascript
+function App() {
+  return (
+    <div>
+      <h1>React CI/CD Pipeline Running Successfully</h1>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 4. Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+### 5. Run React Application
+
+```bash
+npm start
+```
+
+Open Browser
+
+```text
+http://localhost:3000
+```
+
+Output
+
+```text
+React CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 6. Create Dockerfile
+
+```bash
+nano Dockerfile
+```
+
+Paste
+
+```dockerfile
+FROM node:20
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 3000
+
+CMD ["npm","start"]
+```
+
+---
+
+### 7. Build Docker Image
+
+```bash
+docker build -t react-cicd-app:v1 .
+```
+
+---
+
+### 8. Run Docker Container
+
+```bash
+docker run -p 3000:3000 react-cicd-app:v1
+```
+
+Open
+
+```text
+http://localhost:3000
+```
+
+---
+
+### 9. Initialize Git Repository
+
+```bash
+git init
+git add .
+git commit -m "Initial Commit"
+```
+
+---
+
+### 10. Push Project to GitHub
+
+```bash
+git branch -M main
+git remote add origin YOUR_GITHUB_REPOSITORY_URL
+git push -u origin main
+```
+
+---
+
+### 11. Initialize Docker Swarm
+
+```bash
+docker swarm init
+```
+
+---
+
+### 12. Deploy Application
+
+```bash
+docker service create --name react-service --replicas 2 react-cicd-app:v1
+```
+
+---
+
+### 13. Verify Service
+
+```bash
+docker service ls
+```
+
+```bash
+docker ps
+```
+
+---
+
+### 14. Create Jenkinsfile
+
+```bash
+nano Jenkinsfile
+```
+
+Paste
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build React App') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t react-cicd-app:v1 .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker service create --name react-service --replicas 2 react-cicd-app:v1'
+            }
+        }
+
+    }
+}
+```
+
+---
+
+### 15. Push Jenkinsfile
+
+```bash
+git add .
+git commit -m "Added Jenkinsfile"
+git push
+```
+
+---
+
+### 16. Jenkins Execution Steps
+
+1. Open Jenkins.
+2. Click **New Item**.
+3. Enter project name: **react-cicd-pipeline**.
+4. Select **Pipeline**.
+5. Click **OK**.
+6. Select **Pipeline Script from SCM**.
+7. Select **Git**.
+8. Enter GitHub Repository URL.
+9. Branch: **main**.
+10. Script Path: **Jenkinsfile**.
+11. Click **Save**.
+12. Click **Build Now**.
+
+---
+
+## Result
+
+The React application was successfully built using npm, version-controlled with Git/GitHub, automated using Jenkins, containerized using Docker, and deployed successfully on Docker Swarm through a CI/CD pipeline.
+
+---
+
+# 📌 Next
+
+The next response will be **Node.js Application** in the **same format**, followed by:
+
+* ✅ Standalone Python
+* ✅ Standalone Java
+
+These will complete your CI/CD lab manual for all application types.
+Excellent! Now let's continue with the **Node.js Application** in the **exact same format** as your Java Maven and Flask experiments.
+
+---
+
+# Experiment 3
+
+## Aim
+
+Design and implement a CI/CD pipeline for a Node.js application using Git/GitHub for version control, Jenkins for pipeline execution, Docker for containerization, and deploy the application on Docker Swarm.
+
+---
+
+## Architecture
+
+```text
+Developer
+    │
+    ▼
+GitHub
+    │
+    ▼
+Jenkins
+    │
+    ▼
+npm Install
+    │
+    ▼
+Node Build
+    │
+    ▼
+Docker Build
+    │
+    ▼
+Docker Swarm
+    │
+    ▼
+Running Service
+```
+
+---
+
+## Steps
+
+### 1. Create Project Folder
+
+```bash
+mkdir node-cicd-app
+cd node-cicd-app
+```
+
+---
+
+### 2. Create Project Structure
+
+```bash
+touch app.js package.json Dockerfile Jenkinsfile
+```
+
+Project Structure:
+
+```text
+node-cicd-app
+│── app.js
+│── package.json
+│── Dockerfile
+│── Jenkinsfile
+```
+
+---
+
+### 3. Create Node Application
+
+```bash
+nano app.js
+```
+
+Paste:
+
+```javascript
+const express = require("express");
+
+const app = express();
+
+app.get("/", (req, res) => {
+    res.send("Node.js CI/CD Pipeline Running Successfully");
+});
+
+app.listen(3000, () => {
+    console.log("Server Running on Port 3000");
+});
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 4. Create package.json
+
+```bash
+nano package.json
+```
+
+Paste:
+
+```json
+{
+  "name": "node-cicd-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 5. Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+### 6. Run Node Application
+
+```bash
+node app.js
+```
+
+Open Browser:
+
+```text
+http://localhost:3000
+```
+
+Output:
+
+```text
+Node.js CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 7. Create Dockerfile
+
+```bash
+nano Dockerfile
+```
+
+Paste:
+
+```dockerfile
+FROM node:20
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 3000
+
+CMD ["node","app.js"]
+```
+
+---
+
+### 8. Build Docker Image
+
+```bash
+docker build -t node-cicd-app:v1 .
+```
+
+---
+
+### 9. Run Docker Container
+
+```bash
+docker run -p 3000:3000 node-cicd-app:v1
+```
+
+Open Browser:
+
+```text
+http://localhost:3000
+```
+
+Output:
+
+```text
+Node.js CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 10. Initialize Git Repository
+
+```bash
+git init
+git add .
+git commit -m "Initial Commit"
+```
+
+---
+
+### 11. Push Project to GitHub
+
+```bash
+git branch -M main
+git remote add origin YOUR_GITHUB_REPOSITORY_URL
+git push -u origin main
+```
+
+---
+
+### 12. Initialize Docker Swarm
+
+```bash
+docker swarm init
+```
+
+---
+
+### 13. Deploy Application on Docker Swarm
+
+```bash
+docker service create --name node-service --replicas 2 node-cicd-app:v1
+```
+
+---
+
+### 14. Verify Service
+
+```bash
+docker service ls
+```
+
+Verify Running Containers:
+
+```bash
+docker ps
+```
+
+---
+
+### 15. Create Jenkinsfile
+
+```bash
+nano Jenkinsfile
+```
+
+Paste:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t node-cicd-app:v1 .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker service create --name node-service --replicas 2 node-cicd-app:v1'
+            }
+        }
+
+    }
+}
+```
+
+---
+
+### 16. Push Jenkinsfile to GitHub
+
+```bash
+git add .
+git commit -m "Added Jenkinsfile"
+git push
+```
+
+---
+
+### 17. Jenkins Execution Steps
+
+1. Open **Jenkins**.
+2. Click **New Item**.
+3. Enter project name: **node-cicd-pipeline**.
+4. Select **Pipeline**.
+5. Click **OK**.
+6. Under **Pipeline**, select **Pipeline script from SCM**.
+7. Choose **Git**.
+8. Enter your GitHub Repository URL.
+9. Branch: **main**.
+10. Script Path: **Jenkinsfile**.
+11. Click **Save**.
+12. Click **Build Now**.
+
+---
+
+## Result
+
+The Node.js application was successfully built using npm, version-controlled with Git/GitHub, automated using Jenkins, containerized using Docker, and deployed successfully on Docker Swarm through a CI/CD pipeline.
+
+---
+
+# ✅ Remaining
+
+Only **2 experiments** are left:
+
+1. **Standalone Python Application**
+2. **Standalone Java Application (without Maven)**
+
+These are much shorter, and together they will complete your DevOps CI/CD lab preparation for all expected application types.
