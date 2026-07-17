@@ -1,0 +1,340 @@
+Perfect! We'll start with **Flask Web Application** in the **exact same format** as your Java Maven experiment.
+
+---
+
+# Experiment 1
+
+## Aim
+
+Design and implement a CI/CD pipeline for a Flask web application using Python. Use Git/GitHub for version control, Jenkins for pipeline execution, Docker for containerization, and deploy the application on Docker Swarm.
+
+---
+
+## Architecture
+
+```text
+Developer
+    │
+    ▼
+GitHub
+    │
+    ▼
+Jenkins
+    │
+    ▼
+Python Build
+    │
+    ▼
+Docker Build
+    │
+    ▼
+Docker Swarm
+    │
+    ▼
+Running Service
+```
+
+---
+
+## Steps
+
+### 1. Create Project Folder
+
+```bash
+mkdir flask-cicd-app
+cd flask-cicd-app
+```
+
+---
+
+### 2. Create Project Structure
+
+```bash
+touch app.py requirements.txt Dockerfile Jenkinsfile
+```
+
+Project Structure:
+
+```text
+flask-cicd-app
+│── app.py
+│── requirements.txt
+│── Dockerfile
+│── Jenkinsfile
+```
+
+---
+
+### 3. Create Flask Application
+
+```bash
+nano app.py
+```
+
+Paste:
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Flask CI/CD Pipeline Running Successfully"
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+```
+
+Save the file:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 4. Create requirements.txt
+
+```bash
+nano requirements.txt
+```
+
+Paste:
+
+```text
+Flask
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 5. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 6. Run Flask Application
+
+```bash
+python app.py
+```
+
+Open Browser:
+
+```text
+http://localhost:5000
+```
+
+Output:
+
+```text
+Flask CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 7. Create Dockerfile
+
+```bash
+nano Dockerfile
+```
+
+Paste:
+
+```dockerfile
+FROM python:3.11
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+CMD ["python","app.py"]
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 8. Build Docker Image
+
+```bash
+docker build -t flask-cicd-app:v1 .
+```
+
+---
+
+### 9. Run Docker Container
+
+```bash
+docker run -p 5000:5000 flask-cicd-app:v1
+```
+
+Open Browser:
+
+```text
+http://localhost:5000
+```
+
+Output:
+
+```text
+Flask CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 10. Initialize Git Repository
+
+```bash
+git init
+git add .
+git commit -m "Initial Commit"
+```
+
+---
+
+### 11. Push Project to GitHub
+
+```bash
+git branch -M main
+git remote add origin YOUR_GITHUB_REPOSITORY_URL
+git push -u origin main
+```
+
+---
+
+### 12. Initialize Docker Swarm
+
+```bash
+docker swarm init
+```
+
+---
+
+### 13. Deploy Application on Docker Swarm
+
+```bash
+docker service create --name flask-service --replicas 2 flask-cicd-app:v1
+```
+
+---
+
+### 14. Verify Service
+
+```bash
+docker service ls
+```
+
+Verify Running Containers:
+
+```bash
+docker ps
+```
+
+---
+
+### 15. Create Jenkinsfile
+
+```bash
+nano Jenkinsfile
+```
+
+Paste:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t flask-cicd-app:v1 .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker service create --name flask-service --replicas 2 flask-cicd-app:v1'
+            }
+        }
+
+    }
+}
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 16. Push Jenkinsfile to GitHub
+
+```bash
+git add .
+git commit -m "Added Jenkinsfile"
+git push
+```
+
+---
+
+### 17. Jenkins Execution Steps
+
+1. Open **Jenkins**.
+2. Click **New Item**.
+3. Enter project name: **flask-cicd-pipeline**.
+4. Select **Pipeline**.
+5. Click **OK**.
+6. Under **Pipeline**, select **Pipeline Script from SCM**.
+7. Choose **Git**.
+8. Enter your GitHub Repository URL.
+9. Branch: **main**.
+10. Script Path: **Jenkinsfile**.
+11. Click **Save**.
+12. Click **Build Now**.
+
+---
+
+## Result
+
+The Flask web application was successfully built using Python, version-controlled with Git/GitHub, automated using Jenkins, containerized using Docker, and deployed successfully on Docker Swarm through a CI/CD pipeline.
+
+---
+
+### ✅ Next Experiment
+
+The next response will be the **React Application** in the **same detailed format** (around 300 lines), followed by **Node.js**, **Standalone Python**, and **Standalone Java**. This way, you'll have a complete lab manual for all expected CI/CD questions.
