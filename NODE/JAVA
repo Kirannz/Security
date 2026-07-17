@@ -1,0 +1,634 @@
+# Experiment 1
+
+## Aim
+
+Design and implement a CI/CD pipeline for a Java application built using Maven. Use Git/GitHub for version control, Jenkins for pipeline execution, Docker for containerization, and deploy the application on Docker Swarm.
+
+---
+
+## Architecture
+
+```text
+Developer
+    │
+    ▼
+GitHub
+    │
+    ▼
+Jenkins
+    │
+    ▼
+Maven Build
+    │
+    ▼
+Docker Build
+    │
+    ▼
+Docker Swarm
+    │
+    ▼
+Running Service
+```
+
+---
+
+## Steps
+
+### 1. Create Project Folder
+
+```bash
+mkdir java-cicd-app
+cd java-cicd-app
+```
+
+---
+
+### 2. Create Maven Folder Structure
+
+```bash
+mkdir -p src/main/java/com/example
+```
+
+Project Structure:
+
+```text
+java-cicd-app
+│── pom.xml
+│── Dockerfile
+│── Jenkinsfile
+└── src
+    └── main
+        └── java
+            └── com
+                └── example
+                    └── App.java
+```
+
+---
+
+### 3. Create Java File
+
+```bash
+nano src/main/java/com/example/App.java
+```
+
+Paste the following code:
+
+```java
+package com.example;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("CI/CD Pipeline Running Successfully");
+    }
+}
+```
+
+Save the file:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 4. Create pom.xml
+
+```bash
+nano pom.xml
+```
+
+Paste:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>java-cicd-app</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+</project>
+```
+
+---
+
+### 5. Build Maven Project
+
+```bash
+mvn clean package
+```
+
+Generated file:
+
+```text
+target/java-cicd-app-1.0.jar
+```
+
+---
+
+### 6. Run Java Application
+
+```bash
+java -cp target/java-cicd-app-1.0.jar com.example.App
+```
+
+Output:
+
+```text
+CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 7. Create Dockerfile
+
+```bash
+nano Dockerfile
+```
+
+Paste:
+
+```dockerfile
+FROM eclipse-temurin:17-jdk
+
+WORKDIR /app
+
+COPY target/java-cicd-app-1.0.jar app.jar
+
+CMD ["java","-cp","app.jar","com.example.App"]
+```
+
+---
+
+### 8. Build Docker Image
+
+```bash
+docker build -t java-cicd-app:v1 .
+```
+
+---
+
+### 9. Run Docker Container
+
+```bash
+docker run java-cicd-app:v1
+```
+
+Output:
+
+```text
+CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 10. Initialize Git
+
+```bash
+git init
+git add .
+git commit -m "Initial Commit"
+```
+
+---
+
+### 11. Push Project to GitHub
+
+```bash
+git branch -M main
+git remote add origin YOUR_GITHUB_REPOSITORY_URL
+git push -u origin main
+```
+
+---
+
+### 12. Initialize Docker Swarm
+
+```bash
+docker swarm init
+```
+
+---
+
+### 13. Deploy Application on Docker Swarm
+
+```bash
+docker service create --name java-service --replicas 2 java-cicd-app:v1
+```
+
+---
+
+### 14. Verify Service
+
+```bash
+docker service ls
+```
+
+---
+
+### 15. Create Jenkinsfile
+
+```bash
+nano Jenkinsfile
+```
+
+Paste:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t java-cicd-app:v1 .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker service create --name java-service --replicas 2 java-cicd-app:v1'
+            }
+        }
+    }
+}
+```
+
+---
+
+### 16. Push Jenkinsfile to GitHub
+
+```bash
+git add .
+git commit -m "Added Jenkinsfile"
+git push
+```
+
+---
+
+### 17. Jenkins Execution Steps
+
+1. Open Jenkins.
+2. Click **New Item**.
+3. Enter project name: **java-cicd-pipeline**.
+4. Select **Pipeline**.
+5. Click **OK**.
+6. Under **Pipeline**, select **Pipeline script from SCM**.
+7. Choose **Git**.
+8. Enter the GitHub Repository URL.
+9. Branch: **main**.
+10. Script Path: **Jenkinsfile**.
+11. Click **Save**.
+12. Click **Build Now**.
+
+---
+
+## Result
+
+The Java Maven application was successfully built using Maven, version-controlled with Git/GitHub, automated using Jenkins, containerized using Docker, and deployed successfully on Docker Swarm through a CI/CD pipeline.# Experiment 3
+
+## Aim
+
+Create a CI/CD pipeline for a Maven-based Java application using Git/GitHub, Jenkins, and Docker. Deploy the containerized application on a Kubernetes cluster and demonstrate the execution of each pipeline stage.
+
+---
+
+## Architecture
+
+```text
+Developer
+    │
+    ▼
+GitHub
+    │
+    ▼
+Jenkins
+    │
+    ▼
+Checkout
+    │
+    ▼
+Maven Build
+    │
+    ▼
+Docker Build
+    │
+    ▼
+Docker Hub
+    │
+    ▼
+Kubernetes
+    │
+    ▼
+Running Pod
+```
+
+---
+
+## Steps
+
+### 1. Create Project Folder
+
+```bash
+mkdir java-k8s-app
+cd java-k8s-app
+```
+
+---
+
+### 2. Create Maven Folder Structure
+
+```bash
+mkdir -p src/main/java/com/example
+```
+
+Project Structure:
+
+```text
+java-k8s-app
+│── pom.xml
+│── Dockerfile
+│── Jenkinsfile
+└── src
+    └── main
+        └── java
+            └── com
+                └── example
+                    └── App.java
+```
+
+---
+
+### 3. Create Java File
+
+```bash
+nano src/main/java/com/example/App.java
+```
+
+Paste:
+
+```java
+package com.example;
+
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Kubernetes CI/CD Pipeline Running Successfully");
+    }
+}
+```
+
+Save:
+
+```text
+CTRL + O
+Enter
+CTRL + X
+```
+
+---
+
+### 4. Create pom.xml
+
+```bash
+nano pom.xml
+```
+
+Paste:
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>java-k8s-app</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+</project>
+```
+
+---
+
+### 5. Build Maven Project
+
+```bash
+mvn clean package
+```
+
+Generated File:
+
+```text
+target/java-k8s-app-1.0.jar
+```
+
+---
+
+### 6. Run Java Program
+
+```bash
+java -cp target/java-k8s-app-1.0.jar com.example.App
+```
+
+Output:
+
+```text
+Kubernetes CI/CD Pipeline Running Successfully
+```
+
+---
+
+### 7. Create Dockerfile
+
+```bash
+nano Dockerfile
+```
+
+Paste:
+
+```dockerfile
+FROM eclipse-temurin:17-jdk
+
+WORKDIR /app
+
+COPY target/java-k8s-app-1.0.jar app.jar
+
+CMD ["java","-cp","app.jar","com.example.App"]
+```
+
+---
+
+### 8. Build Docker Image
+
+```bash
+docker build -t yourdockerhubusername/java-k8s-app:v1 .
+```
+
+---
+
+### 9. Push Docker Image to Docker Hub
+
+```bash
+docker login
+docker push yourdockerhubusername/java-k8s-app:v1
+```
+
+---
+
+### 10. Initialize Git
+
+```bash
+git init
+git add .
+git commit -m "Initial Commit"
+```
+
+---
+
+### 11. Push to GitHub
+
+```bash
+git branch -M main
+git remote add origin YOUR_GITHUB_REPOSITORY_URL
+git push -u origin main
+```
+
+---
+
+### 12. Start Kubernetes Cluster
+
+```bash
+minikube start
+```
+
+---
+
+### 13. Verify Kubernetes
+
+```bash
+kubectl get nodes
+```
+
+---
+
+### 14. Deploy Application on Kubernetes
+
+```bash
+kubectl create deployment java-app --image=yourdockerhubusername/java-k8s-app:v1
+```
+
+---
+
+### 15. Expose Deployment
+
+```bash
+kubectl expose deployment java-app --type=NodePort --port=8080 --target-port=8080
+```
+
+---
+
+### 16. Verify Deployment
+
+```bash
+kubectl get all
+```
+
+---
+
+### 17. Access Application
+
+```bash
+minikube service java-app --url
+```
+
+---
+
+### 18. Create Jenkinsfile
+
+```bash
+nano Jenkinsfile
+```
+
+Paste:
+
+```groovy
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t yourdockerhubusername/java-k8s-app:v1 .'
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh 'docker push yourdockerhubusername/java-k8s-app:v1'
+            }
+        }
+
+        stage('Deploy Kubernetes') {
+            steps {
+                sh 'kubectl create deployment java-app --image=yourdockerhubusername/java-k8s-app:v1 || true'
+            }
+        }
+
+    }
+}
+```
+
+---
+
+### 19. Push Jenkinsfile to GitHub
+
+```bash
+git add .
+git commit -m "Added Kubernetes Jenkins Pipeline"
+git push
+```
+
+---
+
+### 20. Jenkins Execution Steps
+
+1. Open **Jenkins**.
+2. Click **New Item**.
+3. Enter project name: **java-k8s-pipeline**.
+4. Select **Pipeline**.
+5. Click **OK**.
+6. Select **Pipeline Script from SCM**.
+7. Choose **Git**.
+8. Enter GitHub Repository URL.
+9. Branch: **main**.
+10. Script Path: **Jenkinsfile**.
+11. Click **Save**.
+12. Click **Build Now**.
+
+---
+
+## Result
+
+The Java Maven application was successfully built using Maven, managed with Git/GitHub, automated using Jenkins, containerized with Docker, pushed to Docker Hub, and deployed successfully on a Kubernetes cluster through a CI/CD pipeline.
